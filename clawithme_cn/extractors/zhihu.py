@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from clawithme.crawler.base import Profile, ProfileExtractor
 from clawithme.crawler.client import CrawlerClient
+from clawithme.crawler.utils import first_text, parse_count
 from clawithme.logging import get_logger
 
 logger = get_logger()
@@ -33,17 +34,6 @@ SELECTORS = {
         ".ProfileHeader-followership strong",
     ],
 }
-
-
-def _first_text(response, selectors: list[str]) -> str | None:
-    """Try each CSS selector, return the first non-empty text."""
-    for sel in selectors:
-        result = response.css(sel)
-        if result:
-            text = " ".join(e.text.strip() for e in result if e.text).strip()
-            if text:
-                return text
-    return None
 
 
 class ZhihuExtractor(ProfileExtractor):
@@ -86,12 +76,12 @@ class ZhihuExtractor(ProfileExtractor):
             return profile
 
         # Extract display name
-        name = _first_text(response, SELECTORS["display_name"])
+        name = first_text(response, SELECTORS["display_name"])
         if name:
             profile.display_name = name
 
         # Extract bio
-        bio = _first_text(response, SELECTORS["bio"])
+        bio = first_text(response, SELECTORS["bio"])
         if bio:
             profile.bio = bio
 
@@ -105,18 +95,14 @@ class ZhihuExtractor(ProfileExtractor):
                     break
 
         # Extract location
-        location = _first_text(response, SELECTORS["location"])
+        location = first_text(response, SELECTORS["location"])
         if location:
             profile.location = location
 
         # Extract follower count
-        follower_text = _first_text(response, SELECTORS["follower_count"])
+        follower_text = first_text(response, SELECTORS["follower_count"])
         if follower_text:
-            try:
-                # Handle "12,345" format
-                profile.follower_count = int(follower_text.replace(",", ""))
-            except ValueError:
-                pass
+            profile.follower_count = parse_count(follower_text)
 
         logger.info("zhihu_extracted", username=username, display_name=profile.display_name)
         return profile
