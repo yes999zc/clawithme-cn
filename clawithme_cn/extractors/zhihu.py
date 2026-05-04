@@ -42,9 +42,6 @@ class ZhihuExtractor(ProfileExtractor):
     site_id = "zhihu"
     requires_dynamic = True
 
-    def can_handle(self, site: dict) -> bool:
-        return site.get("id") == "zhihu"
-
     def extract(self, site: dict, username: str) -> Profile:
         url = f"https://www.zhihu.com/people/{username}"
         profile = Profile(
