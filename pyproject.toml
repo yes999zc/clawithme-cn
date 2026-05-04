@@ -17,8 +17,16 @@ dependencies = [
     "scrapling>=0.4",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
 [project.entry-points."clawithme.extractors"]
 zhihu = "clawithme_cn.extractors.zhihu:ZhihuExtractor"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

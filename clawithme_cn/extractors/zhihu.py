@@ -65,7 +65,7 @@ class ZhihuExtractor(ProfileExtractor):
 
         # Check for signin redirect
         if "/signin" in response.url:
-            logger.info("zhihu_login_required", username=username, redirected_to=response.url)
+            logger.debug("zhihu_login_required", username=username, redirected_to=response.url)
             return profile
 
         if response.status != 200:
@@ -101,5 +101,5 @@ class ZhihuExtractor(ProfileExtractor):
         if follower_text:
             profile.follower_count = parse_count(follower_text)
 
-        logger.info("zhihu_extracted", username=username, display_name=profile.display_name)
+        logger.debug("zhihu_extracted", username=username, display_name=profile.display_name)
         return profile
