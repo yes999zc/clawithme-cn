@@ -6,6 +6,7 @@ from clawithme.crawler.base import Profile, ProfileExtractor
 from clawithme.crawler.client import CrawlerClient
 from clawithme.crawler.utils import first_text, parse_count
 from clawithme.logging import get_logger
+from clawithme.signals.avatar import compute_phash
 
 logger = get_logger()
 
@@ -90,6 +91,20 @@ class ZhihuExtractor(ProfileExtractor):
                 if src and not src.startswith("data:"):
                     profile.avatar_url = src
                     break
+
+        # Compute perceptual hash from avatar image
+        if profile.avatar_url:
+            avatar_resp = client.fetch_dynamic(
+                profile.avatar_url,
+                headless=True,
+                disable_resources=True,
+                block_ads=False,
+            )
+            if avatar_resp is not None and avatar_resp.status == 200:
+                # Scrapling DynamicFetcher response — body is raw bytes
+                avatar_body = getattr(avatar_resp, "body", None) or b""
+                if avatar_body:
+                    profile.avatar_phash = compute_phash(avatar_body)
 
         # Extract location
         location = first_text(response, SELECTORS["location"])
