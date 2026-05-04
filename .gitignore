@@ -1,0 +1,15 @@
+# Build
+*.egg-info/
+__pycache__/
+*.pyc
+dist/
+*.whl
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# venv
+.venv/
+venv/

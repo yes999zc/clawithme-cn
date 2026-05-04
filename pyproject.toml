@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clawithme-cn"
+version = "0.1.0"
+description = "China site extractors for clawithme OSINT tool"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "9哥"}
+]
+dependencies = [
+    "clawithme>=0.1.0",
+    "scrapling>=0.4",
+]
+
+[project.entry-points."clawithme.extractors"]
+zhihu = "clawithme_cn.extractors.zhihu:ZhihuExtractor"
+
+[tool.setuptools.packages.find]
+where = ["."]
